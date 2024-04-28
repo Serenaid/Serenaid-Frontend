@@ -1,57 +1,15 @@
 import React, { useState } from 'react';
-import { Alert, View, StyleSheet, Text, TextInput, SafeAreaView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import RNFS from 'react-native-fs';
+import { View, StyleSheet, Text, TextInput, SafeAreaView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import BackgroundAnimation from '../components/BackgroundAnimation';
+import RNFetchBlob from 'react-native-blob-util';
 import SwayLogo from '../components/SwayLogo';
 import AppName from '../components/AppName';
 
 const HomeScreen = () => {
-  const [prompt, setPrompt] = useState('');
+  const [text, setText] = useState('');
 
-  const handleSubmit = async () => {
-    const url = 'http://34.30.141.54:80/api/music';
-    const body = JSON.stringify({
-      description: prompt,
-      duration: 3, // Default length
-    });
-
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body,
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const blob = await response.blob();
-
-      // Use FileReader to read the Blob as a base64 string
-      const reader = new FileReader();
-
-      reader.onloadend = async () => {
-        const base64Data = reader.result.split(',')[1]; // Get the base64 data
-        const path = `${RNFS.DownloadDirectoryPath}/test.wav`;
-
-        try {
-          await RNFS.writeFile(path, base64Data, 'base64');
-          Alert.alert('Audio file saved successfully');
-        } catch (writeError) {
-          console.error('Error writing audio file:', writeError.message);
-          Alert.alert(`Error saving audio file: ${writeError.message}`);
-        }
-      };
-
-      // Read the Blob as a Data URL to extract base64 data
-      reader.readAsDataURL(blob);
-    } catch (error) {
-      console.error('Error fetching or saving audio:', error.message);
-      Alert.alert(`Error fetching or saving audio: ${error.message}`);
-    }
+  const handleSubmit = () => {
+    console.log("Submitted text:", text);  // Logging the submitted text for demonstration
   };
 
   return (
@@ -70,8 +28,8 @@ const HomeScreen = () => {
           <View style={styles.lowerContent}>
             <TextInput
               style={styles.textInput}
-              onChangeText={setPrompt}
-              value={prompt}
+              onChangeText={setText}
+              value={text}
               placeholder="Sleep easily..."
               placeholderTextColor="#999"
             />

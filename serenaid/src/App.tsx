@@ -1,23 +1,43 @@
-// App.tsx
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from './screens/HomeScreen'; // Adjust the path as necessary
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import HomeScreen from './screens/HomeScreen';
+import MusicPlayerScreen from './screens/MusicPlayerScreen';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Import Ionicons from react-native-vector-icons
+import colors from './styles/colors'; // Import your color constants
 
-type RootStackParamList = {
-  Home: undefined;
-  // Define other screens and their parameters here, if any
-};
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        {/* Add more screens here */}
-      </Stack.Navigator>
+      <Tab.Navigator
+        initialRouteName="Home"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            let iconColor;
+
+            if (route.name === 'Home') {
+              iconName = focused ? 'home' : 'home-outline';
+            } else if (route.name === 'Music Player') {
+              iconName = focused ? 'musical-notes' : 'musical-notes-outline';
+            }
+
+            // Adjust icon color based on focus state
+            iconColor = focused ? colors.primary : colors.secondary;
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={iconColor} />;
+          },
+          tabBarActiveTintColor: colors.primary, // Use primary color for active tab
+          tabBarInactiveTintColor: colors.secondary, // Use secondary color for inactive tab
+          tabBarStyle: { display: 'flex', backgroundColor: colors.background }, // Use background color for tab bar
+        })}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Music Player" component={MusicPlayerScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 };
