@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput, SafeAreaView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  SafeAreaView,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import RNFetchBlob from 'react-native-blob-util';
 import SwayLogo from '../components/SwayLogo';
@@ -9,36 +18,30 @@ const HomeScreen = () => {
   const [text, setText] = useState('');
 
   const handleSubmit = () => {
-    console.log("Submitted text:", text);  // Logging the submitted text for demonstration
+    console.log('Submitted text:', text); // Logging the submitted text for demonstration
   };
 
   return (
     <View style={styles.container}>
-      <BackgroundAnimation />
-      <SafeAreaView style={styles.safeArea}>
+      {/* <BackgroundAnimation /> */}
+      {/* <SafeAreaView style={styles.safeArea}>
         <View style={styles.upperContent}>
           <SwayLogo />
           <AppName />
         </View>
-        <KeyboardAvoidingView
-          style={styles.keyboardAvoidView}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-        >
-          <View style={styles.lowerContent}>
-            <TextInput
-              style={styles.textInput}
-              onChangeText={setText}
-              value={text}
-              placeholder="Sleep easily..."
-              placeholderTextColor="#999"
-            />
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Generate</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+        <View style={styles.lowerContent}>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={setText}
+            value={text}
+            placeholder="Sleep easily..."
+            placeholderTextColor="#999"
+          />
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Generate</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView> */}
     </View>
   );
 };
@@ -46,8 +49,6 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
-    position: 'relative',
   },
   safeArea: {
     flex: 1,

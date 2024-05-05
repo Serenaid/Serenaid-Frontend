@@ -1,96 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import axios from 'axios';
-import TrackPlayer, { useTrackPlayerEvents, Event, State } from 'react-native-track-player';
+import React, { useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import TrackPlayer, { useTrackPlayerEvents, Event } from 'react-native-track-player';
 
-const MusicPlayer = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(null);
-
+const MusicPlayer = ({ fileName }) => {
   useEffect(() => {
+    // Initialize TrackPlayer
     const setupPlayer = async () => {
       await TrackPlayer.setupPlayer();
-  
-      // Load tracks from Deezer API
-      const response = await axios.get('https://api.deezer.com/search?q=radiohead');
-      const tracks = response.data.data.map((track) => ({
-        id: track.id.toString(),
-        url: track.preview,
-        title: track.title,
-        artist: track.artist.name,
-      }));
-  
-      await TrackPlayer.add(tracks);
-  
-      const events = [Event.PlaybackState, Event.d];
-  
-      useTrackPlayerEvents(events, (event) => {
-        if (event.type === Event.PlaybackState) {
-          setIsPlaying(event.state === State.Playing);
-        } else if (event.type === Event.PlaybackActiveTrackChanged) {
-          if (event.nextTrack !== undefined) {
-            const trackId = event.nextTrack;
-            const foundTrack = tracks.find((track) => track.id === trackId);
-            setCurrentTrack(foundTrack);
-          }
-        }
+      await TrackPlayer.add({
+        id: fileName,
+        url: `${TrackPlayer.getDocumentDirectoryPath()}/${fileName}`, // Ensure correct file path
+        title: 'Audio Track',
       });
     };
-  
+
     setupPlayer();
-  
+
     return () => {
-      TrackPlayer.stop();
+      TrackPlayer.stop(); // Cleanup on unmount
     };
-  }, []);
-  
-  const togglePlayback = async () => {
-    if (isPlaying) {
-      await TrackPlayer.pause();
-    } else {
-      await TrackPlayer.play();
-    }
-  };
-
-  const skipToNext = async () => {
-    await TrackPlayer.skipToNext();
-  };
-
-  const skipToPrevious = async () => {
-    await TrackPlayer.skipToPrevious();
-  };
+  }, [fileName]);
 
   return (
-    <View style={styles.container}>
-      {currentTrack ? (
-        <>
-          <Text style={styles.trackTitle}>{currentTrack.title}</Text>
-          <Text style={styles.trackArtist}>{currentTrack.artist}</Text>
-        </>
-      ) : (
-        <Text>No track playing</Text>
-      )}
-      <Button title={isPlaying ? 'Pause' : 'Play'} onPress={togglePlayback} />
-      <Button title="Next" onPress={skipToNext} />
-      <Button title="Previous" onPress={skipToPrevious} />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ fontSize: 20 }}>Playing: {fileName}</Text>
+      {/* Add controls for the player, e.g., play/pause */}
+      <TouchableOpacity onPress={() => TrackPlayer.play()}>
+        <Text style={{ fontSize: 16 }}>Play</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => TrackPlayer.pause()}>
+        <Text style={{ fontSize: 16 }}>Pause</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  trackTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  trackArtist: {
-    fontSize: 16,
-    color: 'gray',
-  },
-});
 
 export default MusicPlayer;
